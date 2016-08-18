@@ -1,0 +1,62 @@
+---
+
+- hosts: devdatabase
+  remote_user: root
+  become: yes
+  vars:
+    postgresql_service_name: "postgresql"
+    postgresql_bin_directory: /usr/bin
+
+    postgresql_version: 9.5
+    postgresql_encoding: 'UTF-8'
+    postgresql_locale: 'es_ES.UTF-8'
+
+    postgresql_admin_user: "postgres"
+    postgresql_default_auth_method: "trust"
+
+    postgresql_databases:
+      - name: "datomic-test"
+        owner: "defusu"
+
+    postgresql_users:
+      - name: "defusu"
+        pass: "password"
+
+    postgresql_user_privileges:
+      - name: "defusu"
+        db: "datomic-test"
+        priv: "ALL"
+
+    postgresql_listen_addresses:
+      - "*"
+
+    postgresql_pg_hba_default:
+
+      # These first four lines come from ANXS.posgresql/defaults/main.yml
+      - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }
+      - { type: local, database: all, user: all, address: '',             method: '{{ postgresql_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
+      - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ postgresql_default_auth_method }}', comment: 'IPv4 local connections:' }
+      - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ postgresql_default_auth_method }}', comment: 'IPv6 local connections:' }
+
+      # This fifth line enables the forwarding of the connection for the Vagrant host, so it is seen as local
+      - type: host
+        database: "datomic-test"
+        user: "defusu"
+        address: "10.0.2.2/32" #24?
+        method: "{{ postgresql_default_auth_method }}"
+        comment: "For vagrant port forwarding as in the local machine"
+
+    postgresql_port: 5432
+
+  roles:
+    - ANXS.postgresql
+
+  tasks:
+    - name: Copy sql script
+      copy: src="schema.ddl" dest="/home/vagrant/myschema.ddl" # TODO use a temporary file
+
+    - name: Execute sql script
+      shell: "psql -d datomic-test --user defusu < /home/vagrant/myschema.ddl"
+
+    - name: Delete sql script
+      file: path="home/vagrant/myschema.ddl" state=absent

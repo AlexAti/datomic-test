@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure('2') do |config|
+
+  # Ensure we use our vagrant private key
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = '~/.vagrant.d/insecure_private_key'
+
+  config.vm.define 'devdatabase' do |machine|
+    machine.vm.box = "ubuntu/trusty64"
+
+    machine.vm.network :private_network, ip: '192.168.88.22'
+    machine.vm.network "forwarded_port", guest: 5432, host: 5432
+    machine.vm.hostname = 'devdatabase.local'
+
+    ENV['LC_ALL']="en_US.UTF-8"
+    ENV['LANGUAGE']="en_US.UTF-8"
+
+    machine.vm.provision 'ansible' do |ansible|
+      ansible.groups = {
+        "devdatabase" => ["default"]
+      }
+      ansible.playbook = 'dbserver.yml'
+      ansible.sudo = true
+      ansible.host_key_checking = false
+    end
+
+  end
+
+end

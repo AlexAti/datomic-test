@@ -1,0 +1,21 @@
+# Found somewhere on the net...
+*~
+.\#*
+\#*
+/tmp
+/lib
+/classes
+/native
+/target
+/pom.xml
+/.lein-*
+/.env
+/.idea
+/Clojure\ REPL
+/.nrepl-port
+.vagrant
+*jar
+/docs
+/public/js/out
+/public/js/app.js
+figwheel_server.log

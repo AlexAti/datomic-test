@@ -1,0 +1,13 @@
+# This avoids multiplatform problems, as it asks git to convert
+# from CRLF to LF on commit from Windows machines.
+
+# Default behaviour
+* text=auto
+
+# Specific treatment of file types
+*.clj text
+*.cljs text
+
+# This should not be modified
+*.png binary
+*.jpg binary

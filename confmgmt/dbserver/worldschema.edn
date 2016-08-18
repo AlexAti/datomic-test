@@ -1,0 +1,50 @@
+;; World map areas
+; In reality I'd be fine with something along the lines of:
+; {:worldmap/worldarea [[1 2] [3 4]]}
+
+[{:db/id #db/id[:db.part/db]
+  :db/ident :log/user-id
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :log/event
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :worldmap/country
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/many
+  :db/doc "A region in the world."
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :worldmap/worldarea
+  :db/isComponent true
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db/doc "An area in the world (i.e. a list of points that enclose it)."
+  :worldmap/_regions :db.type/ref
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :worldmap/coordinates
+  :db/isComponent true
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db/doc "Coordinates of one point in the world"
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :worldmap/latitude
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Latitude of one point in the world"
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :worldmap/longitude
+  :db/valueType :db.type/double
+  :db/cardinality :db.cardinality/one
+  :db/doc "Longitude of one point in the world"
+  :db.install/_attribute :db.part/db}]
